@@ -42,6 +42,19 @@ class MarkovModel:
         
         return prob
 
+    def emitProbability(self, observedStates, observedEmits):
+        prob = 1
+        previousState = None
+        for index, state in enumerate(observedStates):
+            if previousState is None:
+                prob *= self.pi[0, state]
+            else:
+                prob *= self.alpha[previousState, state]
+            prob *= self.epsilon[state][observedEmits[index]]
+            previousState = state
+        
+        return prob
+
 
     def forward(self, emits):
         numStates = self.alpha.shape[0]
@@ -100,15 +113,17 @@ class MarkovModel:
         F, pX = self.forward(emits)
         B, _ = self.backward(emits)
         return np.multiply(F, B) / pX
-
-
-
+    
+    
 
 
 if __name__ == "__main__":
-    MM = MarkovModel(pi=np.array([[0.5, 0.5]]), alpha=np.array([[0.7, 0.3], [0.3, 0.7]]),
+    MM = MarkovModel(pi=np.array([[1, 0, 0, 0]]), alpha=np.array([[0.16, 0.29, 0.43, 0.12], 
+                                                                  [0.13, 0.31, 0.39, 0.17],
+                                                                  [0.14, 0.38, 0.36, 0.12],
+                                                                  [0.08, 0.38, 0.36, 0.18]]),
                     epsilon=[np.array([0.4, 0.1, 0.4, 0.1]), np.array([0.25, 0.25, 0.25, 0.25])])
-    print(MM.probabilityDistribution(2))
-    print(MM.stationaryDistribution())
-    print(MM.backward(DNAToState("CTAG")))
-    print(MM.posteriorDecoding(DNAToState("CTAG")))
+    print(MM.probabilityDistribution(100000))
+    #print(MM.stationaryDistribution())
+    #print(MM.viterbi(DNAToState("CTAG")))
+    #print(MM.posteriorDecoding(DNAToState("CTAG")))

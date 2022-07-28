@@ -26,7 +26,23 @@ class LongestCommonSubsequence:
         
         print(self.C)
 
-if __name__ == "__main__":
-    LCS = LongestCommonSubsequence([1,2,3,4,5,6,7,8], [4,1,3,2,5,7,6,8])
-    LCS.run()
 
+def LCS(S, T):
+    lcs = np.zeros((len(S) + 1, len(T) + 1))
+    for i in range(1, len(S) + 1):
+        for j in range(1, len(T) + 1):
+            if S[i-1] == T[j-1]:
+                lcs[i, j] = 1 + lcs[i-1, j-1]
+            else:
+                lcs[i, j] = max(lcs[i-1, j], lcs[i, j-1])
+
+    print(lcs) 
+
+
+if __name__ == "__main__":
+    #LCS = LongestCommonSubsequence([1,2,3,4,5,6,7,8], [4,1,3,2,5,7,6,8])
+    #LCS.run()
+    LCS("ACTGCATGACTGGTA", 
+        "TACCAGTCATGCAGT")
+    LCS("ACCATATGGTA", 
+        "ACCATATGGT")

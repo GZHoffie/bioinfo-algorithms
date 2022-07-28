@@ -17,9 +17,9 @@ class DNAAlign:
     def runDP(self):
         # Initialize
         for j in range(1, self.n + 1):
-            self.D[0][j] = 0
+            self.D[0][j] = self.D[0][j-1] + self.score["indel"]
         for i in range(1, self.m + 1):
-            self.D[i][0] = 0
+            self.D[i][0] = self.D[0][i-1] + self.score["indel"]
         for i in range(1, self.m + 1):
             for j in range(1, self.n + 1):
                 delete = self.D[i-1][j] + self.score["indel"]
@@ -112,15 +112,11 @@ class DNAAlignAffine:
 
 
 if __name__ == "__main__":
-    prob = DNAAlign("ACTCGATC", "GTTCGCCT")
+    prob = DNAAlign("CGTAGTA", "ACGTCGTA", match=1, mismatch=-1, indel=-2)
     print(prob.runDP())
     print(prob.D)
     print(prob)
 
-    prob = DNAAlignAffine("ACCGA", "AGTTA", 1, -3, -1, -1)
-    prob.runDP()
-    print(prob.V)
-    print(prob.E)
-    print(prob.F)
+
 
     
